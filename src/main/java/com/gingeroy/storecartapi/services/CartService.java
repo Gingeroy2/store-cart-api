@@ -10,6 +10,7 @@ import com.gingeroy.storecartapi.exceptions.ProductNotFoundException;
 import com.gingeroy.storecartapi.mappers.CartMapper;
 import com.gingeroy.storecartapi.repositories.CartRepository;
 import com.gingeroy.storecartapi.repositories.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,14 @@ public class CartService {
     private CartMapper cartMapper;
     private ProductRepository productRepository;
 
+    @Transactional
     public CartDto createCart(){
         Cart cart = new Cart();
         cartRepository.save(cart);
         return cartMapper.toCartDto(cart);
     }
 
+    @Transactional
     public CartItemDto addToCart(UUID cartId, Long productId){
         // 购物车是否存在
         Cart cart = cartRepository.findById(cartId).orElse(null);
@@ -48,6 +51,7 @@ public class CartService {
         return cartMapper.toCartItemDto(cartItem);
     }
 
+    @Transactional
     public CartDto getCart(UUID cartId){
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart == null){
@@ -57,6 +61,7 @@ public class CartService {
         return cartMapper.toCartDto(cart);
     }
 
+    @Transactional
     public CartItemDto updateCartItem(UUID cartId, Long productId, Integer quantity){
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart == null){
@@ -74,6 +79,7 @@ public class CartService {
         return cartMapper.toCartItemDto(cartItem);
     }
 
+    @Transactional
     public void removeCartItem(UUID cartId,Long productId){
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart == null){
@@ -90,6 +96,7 @@ public class CartService {
         cartItem.setCart(null);
     }
 
+    @Transactional
     public void clearCartItems(UUID cartId){
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart == null){
